@@ -1,7 +1,10 @@
 
 pragma solidity ^0.8.20;
+import "@openzeppelin/contracts/access/Ownable.sol";
+import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
-import '@openzeppelin/contracts/access/Ownable.sol';
 /**
  * @title Barin Vesting Contract
  * @author MerkleX
@@ -25,7 +28,7 @@ contract BarinVesting is Ownable(msg.sender), ReentrancyGuard {
     }
 
     IERC20 public immutable token;
-    uint256 public immutable vestingStart;
+    // uint256 public immutable vestingStart;
 
     // track how many tokens are fully allocated vs. how many have been released
     uint256 private _totalAllocated;
@@ -50,10 +53,10 @@ contract BarinVesting is Ownable(msg.sender), ReentrancyGuard {
     error InsufficientBalance();
     error Underflow();
 
-    constructor(address _token, uint256 _vestingStart) {
+    constructor(address _token) {
         if (_token == address(0)) revert InvalidSchedule();
         token = IERC20(_token);
-        vestingStart = _vestingStart > 0 ? _vestingStart : block.timestamp;
+        // vestingStart = _vestingStart > 0 ? _vestingStart : block.timestamp;
     }
 
     /**
@@ -140,7 +143,7 @@ contract BarinVesting is Ownable(msg.sender), ReentrancyGuard {
             totalAmount: totalAmount,
             cliffDuration: cliffDuration,
             vestingDuration: vestingDuration,
-            startTime: vestingStart,
+            startTime: block.timestamp,
             withdrawnAmount: 0,
             beneficiary: beneficiary,
             revocable: revocable
@@ -154,7 +157,7 @@ contract BarinVesting is Ownable(msg.sender), ReentrancyGuard {
     /**
      * @dev Release vested tokens for a specific schedule
      */
-    function release(bytes32 scheduleId) external nonReentrant {
+    function release(bytes32 scheduleId) public nonReentrant {
         VestingSchedule storage schedule = _schedules[scheduleId];
 
         if (schedule.beneficiary != msg.sender && msg.sender != owner()) {
@@ -189,7 +192,7 @@ contract BarinVesting is Ownable(msg.sender), ReentrancyGuard {
             uint256 vested = _vestedAmount(sid);
             uint256 withdrawn = _schedules[sid].withdrawnAmount;
             if (vested > withdrawn) {
-                this.release(sid);
+                release(sid);
             }
         }
     }
@@ -198,26 +201,26 @@ contract BarinVesting is Ownable(msg.sender), ReentrancyGuard {
      * @dev Revoke a vesting schedule (if revocable)
      */
     function revoke(bytes32 scheduleId) external onlyOwner {
-    VestingSchedule storage schedule = _schedules[scheduleId];
+        VestingSchedule storage schedule = _schedules[scheduleId];
 
-    if (!schedule.revocable) {
-        revert ScheduleNotRevocable();
+        if (!schedule.revocable) {
+            revert ScheduleNotRevocable();
+        }
+
+        uint256 vested = _vestedAmount(scheduleId);
+        uint256 unvestedAmount = schedule.totalAmount - vested;
+
+        schedule.totalAmount = vested;
+        schedule.revocable = false;
+        
+        // Adjust total allocated
+        _totalAllocated -= unvestedAmount;
+
+        if (unvestedAmount > 0) {
+            token.safeTransfer(owner(), unvestedAmount);
+            emit VestingRevoked(scheduleId, unvestedAmount);
+        }
     }
-
-    uint256 vested = _vestedAmount(scheduleId);
-    uint256 unvestedAmount = schedule.totalAmount - vested;
-
-    schedule.totalAmount = vested;
-    schedule.revocable = false;
-    
-    // Adjust total allocated
-    _totalAllocated -= unvestedAmount;
-
-    if (unvestedAmount > 0) {
-        token.safeTransfer(owner(), unvestedAmount);
-        emit VestingRevoked(scheduleId, unvestedAmount);
-    }
-}
 
     /**
      * @dev Calculate releasable amount for a schedule

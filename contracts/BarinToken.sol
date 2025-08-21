@@ -9,7 +9,7 @@ import '@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol';
  * @dev Inherits from OpenZeppelin's ERC20 and ERC20Permit to enable standard ERC20 behavior and gasless approvals.
  */
 contract Barin is ERC20, ERC20Permit {
-    constructor() ERC20("Barin Mineral Token", "BARIN") ERC20Permit("Barin") {
+    constructor() ERC20("Barin Mineral Token", "BARIN") ERC20Permit("Barin Mineral Token") {
         _mint(msg.sender, 1_000_000_000 * 10 ** decimals());
     }
 }
