@@ -5,6 +5,12 @@
   "repository": "git@github.com:Barin-Mineral-INC/Barin-Contracts.git",
   "author": "bony000",
   "license": "MIT",
+  "scripts": {
+    "compile": "yarn hardhat compile",
+    "test": "yarn hardhat test",
+    "runNode": "yarn hardhat node &",
+    "coverage": "yarn hardhat coverage"
+  },
   "devDependencies": {
     "@nomicfoundation/hardhat-chai-matchers": "^2.0.0",
     "@nomicfoundation/hardhat-ethers": "^3.1.0",
