@@ -16,7 +16,4 @@
 # Typechain output
 /types
 
-# Hardhat coverage reports
-/coverage
-
 /typechain-types

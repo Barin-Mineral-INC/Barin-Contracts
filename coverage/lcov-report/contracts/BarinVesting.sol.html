@@ -1,0 +1,887 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for contracts/BarinVesting.sol</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../index.html">all files</a> / <a href="index.html">contracts/</a> BarinVesting.sol
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">88.68% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>47/53</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">64% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>32/50</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">78.57% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>11/14</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">88.41% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>61/69</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12×</span>
+<span class="cline-any cline-yes">12×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12×</span>
+<span class="cline-any cline-yes">12×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11×</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">&nbsp;
+pragma solidity ^0.8.20;
+import "@openzeppelin/contracts/access/Ownable.sol";
+import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+&nbsp;
+/**
+ * @title Barin Vesting Contract
+ * @author MerkleX
+ * @notice Manages multiple vesting schedules for BARIN token allocations across team, marketing, liquidity, and other categories.
+ * @dev Uses OpenZeppelin’s Ownable and ReentrancyGuard. 
+ *      Schedules are created with a cliff period, total duration, linear vesting, and optional revocability.
+ *      Beneficiaries can claim vested tokens, and owner can revoke unvested portions if allowed.
+ */
+&nbsp;
+contract BarinVesting is Ownable(msg.sender), ReentrancyGuard {
+    using SafeERC20 for IERC20;
+&nbsp;
+    struct VestingSchedule {
+        uint256 totalAmount;
+        uint256 cliffDuration;     // in seconds
+        uint256 vestingDuration;   // in seconds
+        uint256 startTime;
+        uint256 withdrawnAmount;
+        address beneficiary;
+        bool revocable;
+    }
+&nbsp;
+    IERC20 public immutable token;
+    // uint256 public immutable vestingStart;
+&nbsp;
+    // track how many tokens are fully allocated vs. how many have been released
+    uint256 private _totalAllocated;
+    uint256 private _totalReleased;
+&nbsp;
+    // simple nonce to avoid duplicate IDs
+    uint256 private _nonce;
+&nbsp;
+    mapping(bytes32 =&gt; VestingSchedule) private _schedules;
+    mapping(address =&gt; bytes32[]) private _beneficiarySchedules;
+&nbsp;
+    event VestingScheduleCreated(bytes32 indexed scheduleId, address indexed beneficiary, uint256 amount);
+    event TokensReleased(bytes32 indexed scheduleId, address indexed beneficiary, uint256 amount);
+    event VestingRevoked(bytes32 indexed scheduleId, uint256 unvested);
+    event EmergencyWithdraw(address indexed tokenAddress, uint256 amount);
+&nbsp;
+    error InvalidSchedule();
+    error CliffLongerThanDuration();
+    error NothingToRelease();
+    error NotBeneficiary();
+    error ScheduleNotRevocable();
+    error InsufficientBalance();
+    error Underflow();
+&nbsp;
+    constructor(address _token) {
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (_token == address(0)) revert InvalidSchedule();
+        token = IERC20(_token);
+        // vestingStart = _vestingStart &gt; 0 ? _vestingStart : block.timestamp;
+    }
+&nbsp;
+    /**
+     * @dev Creates a new vesting schedule
+     * @param beneficiary Address of the beneficiary
+     * @param totalAmount Total amount to be vested
+     * @param cliffDuration Cliff period in seconds
+     * @param vestingDuration Total vesting duration in seconds
+     * @param revocable Whether the schedule can be revoked
+     */
+    function createVestingSchedule(
+        address beneficiary,
+        uint256 totalAmount,
+        uint256 cliffDuration,
+        uint256 vestingDuration,
+        bool revocable
+    ) external onlyOwner returns (bytes32 scheduleId) {
+        return _createVestingSchedule(beneficiary, totalAmount, cliffDuration, vestingDuration, revocable);
+    }
+&nbsp;
+    /**
+     * @dev Batch create multiple vesting schedules (gas efficient)
+     */
+    function batchCreateSchedules(
+        address[] calldata beneficiaries,
+        uint256[] calldata amounts,
+        uint256[] calldata cliffDurations,
+        uint256[] calldata vestingDurations,
+        bool[] calldata revocables
+    ) external <span class="missing-if-branch" title="else path not taken" >E</span>onlyOwner {
+        uint256 length = beneficiaries.length;
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (
+            length != amounts.length ||
+            length != cliffDurations.length ||
+            length != vestingDurations.length ||
+            length != revocables.length
+        ) {
+            revert InvalidSchedule();
+        }
+&nbsp;
+        for (uint256 i = 0; i &lt; length; i++) {
+            _createVestingSchedule(
+                beneficiaries[i],
+                amounts[i],
+                cliffDurations[i],
+                vestingDurations[i],
+                revocables[i]
+            );
+        }
+    }
+&nbsp;
+    /**
+     * @dev Internal function to create vesting schedule
+     */
+    function _createVestingSchedule(
+        address beneficiary,
+        uint256 totalAmount,
+        uint256 cliffDuration,
+        uint256 vestingDuration,
+        bool revocable
+    ) internal returns (bytes32 scheduleId) {
+        if (beneficiary == address(0) || totalAmount == 0 || vestingDuration == 0) {
+            revert InvalidSchedule();
+        }
+        if (cliffDuration &gt; vestingDuration) {
+            revert CliffLongerThanDuration();
+        }
+&nbsp;
+        // compute how many tokens are already “owed” by existing schedules
+        uint256 owed = _totalAllocated - _totalReleased;
+        uint256 available = token.balanceOf(address(this)) - owed;
+        if (available &lt; totalAmount) {
+            revert InsufficientBalance();
+        }
+&nbsp;
+        _totalAllocated += totalAmount;
+&nbsp;
+        // include a nonce to avoid duplicate IDs in the same block
+        scheduleId = keccak256(
+            abi.encodePacked(beneficiary, block.timestamp, totalAmount, _nonce++)
+        );
+&nbsp;
+        _schedules[scheduleId] = VestingSchedule({
+            totalAmount: totalAmount,
+            cliffDuration: cliffDuration,
+            vestingDuration: vestingDuration,
+            startTime: block.timestamp,
+            withdrawnAmount: 0,
+            beneficiary: beneficiary,
+            revocable: revocable
+        });
+&nbsp;
+        _beneficiarySchedules[beneficiary].push(scheduleId);
+&nbsp;
+        emit VestingScheduleCreated(scheduleId, beneficiary, totalAmount);
+    }
+&nbsp;
+    /**
+     * @dev Release vested tokens for a specific schedule
+     */
+    function release(bytes32 scheduleId) public <span class="missing-if-branch" title="else path not taken" >E</span>nonReentrant {
+        VestingSchedule storage schedule = _schedules[scheduleId];
+&nbsp;
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (schedule.beneficiary != msg.sender &amp;&amp; msg.sender != owner()) {
+            revert NotBeneficiary();
+        }
+&nbsp;
+        uint256 vested = _vestedAmount(scheduleId);
+        uint256 withdrawn = schedule.withdrawnAmount;
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (vested &lt; withdrawn) {
+            revert Underflow();
+        }
+&nbsp;
+        uint256 releasable = vested - withdrawn;
+        if (releasable == 0) {
+            revert NothingToRelease();
+        }
+&nbsp;
+        schedule.withdrawnAmount = withdrawn + releasable;
+        _totalReleased += releasable;
+&nbsp;
+        token.safeTransfer(schedule.beneficiary, releasable);
+&nbsp;
+        emit TokensReleased(scheduleId, schedule.beneficiary, releasable);
+    }
+&nbsp;
+    /**
+     * @dev Batch release for multiple schedules
+     */
+    function batchRelease(bytes32[] calldata scheduleIds) external {
+        for (uint256 i = 0; i &lt; scheduleIds.length; i++) {
+            bytes32 sid = scheduleIds[i];
+            uint256 vested = _vestedAmount(sid);
+            uint256 withdrawn = _schedules[sid].withdrawnAmount;
+            <span class="missing-if-branch" title="else path not taken" >E</span>if (vested &gt; withdrawn) {
+                release(sid);
+            }
+        }
+    }
+&nbsp;
+    /**
+     * @dev Revoke a vesting schedule (if revocable)
+     */
+    function revoke(bytes32 scheduleId) external <span class="missing-if-branch" title="else path not taken" >E</span>onlyOwner {
+        VestingSchedule storage schedule = _schedules[scheduleId];
+&nbsp;
+        if (!schedule.revocable) {
+            revert ScheduleNotRevocable();
+        }
+&nbsp;
+        uint256 vested = _vestedAmount(scheduleId);
+        uint256 unvestedAmount = schedule.totalAmount - vested;
+&nbsp;
+        schedule.totalAmount = vested;
+        schedule.revocable = false;
+        
+        // Adjust total allocated
+        _totalAllocated -= unvestedAmount;
+&nbsp;
+        <span class="missing-if-branch" title="else path not taken" >E</span>if (unvestedAmount &gt; 0) {
+            token.safeTransfer(owner(), unvestedAmount);
+            emit VestingRevoked(scheduleId, unvestedAmount);
+        }
+    }
+&nbsp;
+    /**
+     * @dev Calculate releasable amount for a schedule
+     */
+<span class="fstat-no" title="function not covered" >    function _releasableAmount(bytes32 scheduleId) private view returns (uint256) {</span>
+<span class="cstat-no" title="statement not covered" >        uint256 vested = _vestedAmount(scheduleId);</span>
+<span class="cstat-no" title="statement not covered" >        uint256 withdrawn = _schedules[scheduleId].withdrawnAmount;</span>
+<span class="cstat-no" title="statement not covered" >        return vested &gt; withdrawn ? (vested - withdrawn) : 0;</span>
+    }
+&nbsp;
+    /**
+     * @dev Calculate vested amount for a schedule
+     */
+    function _vestedAmount(bytes32 scheduleId) private view returns (uint256) {
+        VestingSchedule memory schedule = _schedules[scheduleId];
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (schedule.beneficiary == address(0)) <span class="cstat-no" title="statement not covered" >return 0;</span>
+&nbsp;
+        uint256 elapsed = block.timestamp - schedule.startTime;
+        if (elapsed &lt; schedule.cliffDuration) {
+            return 0;
+        }
+        if (elapsed &gt;= schedule.vestingDuration) {
+            return schedule.totalAmount;
+        }
+        return (schedule.totalAmount * elapsed) / schedule.vestingDuration;
+    }
+&nbsp;
+    // View functions
+    function getSchedule(bytes32 scheduleId) external view returns (VestingSchedule memory) {
+        return _schedules[scheduleId];
+    }
+&nbsp;
+<span class="fstat-no" title="function not covered" >    function releasableAmount(bytes32 scheduleId) external view returns (uint256) {</span>
+<span class="cstat-no" title="statement not covered" >        return _releasableAmount(scheduleId);</span>
+    }
+&nbsp;
+<span class="fstat-no" title="function not covered" >    function vestedAmount(bytes32 scheduleId) external view returns (uint256) {</span>
+<span class="cstat-no" title="statement not covered" >        return _vestedAmount(scheduleId);</span>
+    }
+&nbsp;
+    function getBeneficiarySchedules(address beneficiary) external view returns (bytes32[] memory) {
+        return _beneficiarySchedules[beneficiary];
+    }
+&nbsp;
+    /**
+     * @dev Emergency function to recover accidentally sent tokens
+     */
+    function emergencyWithdraw(address tokenAddress, uint256 amount) external onlyOwner {
+        IERC20(tokenAddress).safeTransfer(owner(), amount);
+        emit EmergencyWithdraw(tokenAddress, amount);
+    }
+}</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Fri Aug 22 2025 14:16:29 GMT-0400 (Eastern Daylight Time)
+</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>
