@@ -1,11 +1,11 @@
-import { loadFixture, time } from "@nomicfoundation/hardhat-toolbox/network-helpers";
+import { loadFixture, time } from "@nomicfoundation/hardhat-network-helpers";
 import { expect } from "chai";
 import { ethers } from "hardhat";
 
 describe("Barin (ERC20 + ERC20Permit)", function () {
   async function deploy() {
     const [deployer, alice, bob] = await ethers.getSigners();
-    const Barin = await ethers.getContractFactory("Barin", deployer);
+    const Barin = await ethers.getContractFactory("BarinToken", deployer);
     const token = await Barin.deploy();
     await token.waitForDeployment();
     return { token, deployer, alice, bob };

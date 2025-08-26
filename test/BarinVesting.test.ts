@@ -6,7 +6,7 @@ describe("BarinVesting", () => {
   async function deploy() {
     const [owner, ben1, ben2, outsider] = await ethers.getSigners();
 
-    const Token = await ethers.getContractFactory("Barin", owner);
+    const Token = await ethers.getContractFactory("BarinToken", owner);
     const token = await Token.deploy();
     await token.waitForDeployment();
 
@@ -67,6 +67,8 @@ describe("BarinVesting", () => {
       receipt.logs.find((l: any) => l.topics[0] === vesting.interface.getEvent("VestingScheduleCreated").topicHash)!
     )).args.scheduleId;
     
+    await vesting.releasableAmount(sid);
+    await vesting.vestedAmount(sid);
 
     await increaseTime(duration + 1);
     await vesting.connect(ben1).release(sid);
@@ -199,5 +201,15 @@ describe("BarinVesting", () => {
         ben1.address, ethers.parseEther("200"), 0, 1000, false
       )
     ).to.be.revertedWithCustomError(vesting, "InsufficientBalance");
+  });
+
+  it("extra", async () => {
+    const Vesting = await ethers.getContractFactory("BarinVesting");
+    await expect(Vesting.deploy(ethers.ZeroAddress)).to.revertedWithCustomError(Vesting, "InvalidSchedule");
+
+    const { owner, ben1, token, vesting } = await deploy();
+    await expect(vesting.connect(ben1).batchCreateSchedules([],[],[],[],[])).to.revertedWithCustomError(Vesting, "OwnableUnauthorizedAccount");
+    await expect(vesting.batchCreateSchedules([],[],[],[],[true])).to.revertedWithCustomError(Vesting, "InvalidSchedule");
+
   });
 });
