@@ -9,7 +9,11 @@
     "compile": "yarn hardhat compile",
     "test": "yarn hardhat test",
     "runNode": "yarn hardhat node &",
-    "coverage": "yarn hardhat coverage"
+    "coverage": "yarn hardhat coverage",
+    "deploy:token": "yarn hardhat deploy --tags BarinToken",
+    "deploy:vesting": "yarn hardhat deploy --tags BarinVesting",
+    "flatten:token": "yarn hardhat flatten contracts/BarinToken.sol > flat/BarinToken.flattened.sol",
+    "flatten:vesting": "yarn hardhat flatten contracts/BarinVesting.sol > flat/BarinVesting.flattened.sol"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-chai-matchers": "^2.0.0",
