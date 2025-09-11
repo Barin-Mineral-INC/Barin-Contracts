@@ -8,12 +8,12 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
 
 /**
- * @title MultiPoolStakingUpgradeable
+ * @title BarinStaking
  * @notice Upgradable staking contract with multiple pools (flexible/locked),
  *         BARIN reward token, rewardPerSec emissions, early withdrawal penalties,
  *         and admin-controlled parameters.
  */
-contract MultiPoolStakingUpgradeable is
+contract BarinStaking is
     Initializable,
     AccessControlUpgradeable,
     ReentrancyGuardUpgradeable,
