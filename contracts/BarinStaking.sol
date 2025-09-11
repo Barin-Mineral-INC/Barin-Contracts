@@ -10,7 +10,7 @@ import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
 /**
  * @title MultiPoolStakingUpgradeable
  * @notice Upgradable staking contract with multiple pools (flexible/locked),
- *         BARIN reward token, rewardPerBlock emissions, early withdrawal penalties,
+ *         BARIN reward token, rewardPerSec emissions, early withdrawal penalties,
  *         and admin-controlled parameters.
  */
 contract MultiPoolStakingUpgradeable is
@@ -22,11 +22,13 @@ contract MultiPoolStakingUpgradeable is
 {
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
 
+    uint256 public constant MULTIPLIER = 1e12;
+
     IERC20 public stakingToken;   // BARIN staking token
     IERC20 public rewardToken;    // BARIN reward token
 
     struct Pool {
-        uint256 rewardPerBlock;
+        uint256 rewardPerSec;
         uint256 minStake;      
         uint256 penaltyBps;     
         uint256 endTime;     
@@ -48,8 +50,8 @@ contract MultiPoolStakingUpgradeable is
     mapping(address => mapping(uint256 => Stake)) public stakes;
 
     // ---------------- EVENTS ----------------
-    event PoolAdded(uint256 indexed poolId, uint256 rewardPerBlock);
-    event PoolUpdated(uint256 indexed poolId, uint256 rewardPerBlock);
+    event PoolAdded(uint256 indexed poolId, uint256 rewardPerSec);
+    event PoolUpdated(uint256 indexed poolId, uint256 rewardPerSec);
     event Staked(address indexed user, uint256 indexed poolId, uint256 amount);
     event Withdrawn(address indexed user, uint256 indexed poolId, uint256 amount, uint256 penalty);
     event RewardClaimed(address indexed user, uint256 indexed poolId, uint256 reward);
@@ -80,14 +82,14 @@ contract MultiPoolStakingUpgradeable is
 
     // ---------------- ADMIN METHODS ----------------
     function addPool(
-        uint256 rewardPerBlock,
+        uint256 rewardPerSec,
         uint256 minStake,
         uint256 penaltyBps,
         uint256 endTime,
         uint256 accRewardPerShare
     ) external onlyRole(ADMIN_ROLE) {
         pools[poolCount] = Pool({
-            rewardPerBlock: rewardPerBlock,
+            rewardPerSec: rewardPerSec,
             minStake: minStake,
             penaltyBps: penaltyBps,
             endTime: endTime,
@@ -97,13 +99,13 @@ contract MultiPoolStakingUpgradeable is
             exists: true
         });
 
-        emit PoolAdded(poolCount, rewardPerBlock);
+        emit PoolAdded(poolCount, rewardPerSec);
         poolCount++;
     }
 
     function updatePool(
         uint256 poolId,
-        uint256 rewardPerBlock,
+        uint256 rewardPerSec,
         uint256 minStake,
         uint256 penaltyBps,
         uint256 endTime
@@ -112,11 +114,11 @@ contract MultiPoolStakingUpgradeable is
         _updatePool(poolId);
 
         Pool storage p = pools[poolId];
-        p.rewardPerBlock = rewardPerBlock;
+        p.rewardPerSec = rewardPerSec;
         p.minStake = minStake;
         p.penaltyBps = penaltyBps;
         p.endTime = endTime;
-        emit PoolUpdated(poolId, rewardPerBlock);
+        emit PoolUpdated(poolId, rewardPerSec);
     }
 
     // ---------------- USER METHODS ----------------
@@ -131,7 +133,7 @@ contract MultiPoolStakingUpgradeable is
 
         Stake storage s = stakes[msg.sender][poolId];
         if (s.amount > 0) {
-            uint256 pending = (s.amount * p.accRewardPerShare) / 1e12 - s.rewardDebt;
+            uint256 pending = (s.amount * p.accRewardPerShare) / MULTIPLIER - s.rewardDebt;
             if (pending > 0) {
                 rewardToken.transfer(msg.sender, pending);
                 emit RewardClaimed(msg.sender, poolId, pending);
@@ -142,7 +144,7 @@ contract MultiPoolStakingUpgradeable is
 
         s.amount += amount;
         s.unlockTime = p.endTime;
-        s.rewardDebt = (s.amount * p.accRewardPerShare) / 1e12;
+        s.rewardDebt = (s.amount * p.accRewardPerShare) / MULTIPLIER;
 
         p.totalStaked += amount;
         emit Staked(msg.sender, poolId, amount);
@@ -155,7 +157,7 @@ contract MultiPoolStakingUpgradeable is
 
         _updatePool(poolId);
 
-        uint256 pending = (s.amount * p.accRewardPerShare) / 1e12 - s.rewardDebt;
+        uint256 pending = (s.amount * p.accRewardPerShare) / MULTIPLIER - s.rewardDebt;
 
         uint256 penalty;
         if (block.timestamp < s.unlockTime) {
@@ -165,7 +167,7 @@ contract MultiPoolStakingUpgradeable is
         }
 
         s.amount -= amount;
-        s.rewardDebt = (s.amount * p.accRewardPerShare) / 1e12;
+        s.rewardDebt = (s.amount * p.accRewardPerShare) / MULTIPLIER;
         p.totalStaked -= amount;
 
         stakingToken.transfer(msg.sender, amount - penalty);
@@ -198,15 +200,15 @@ contract MultiPoolStakingUpgradeable is
     // ---------------- INTERNAL REWARD LOGIC ----------------
     function _updatePool(uint256 poolId) internal {
         Pool storage p = pools[poolId];
-        if (block.number <= p.lastRewardTime) return;
+        if (block.timestamp <= p.lastRewardTime) return;
         if (p.totalStaked == 0) {
-            p.lastRewardTime = block.number;
+            p.lastRewardTime = block.timestamp;
             return;
         }
-        uint256 blocks = block.number - p.lastRewardTime;
-        uint256 reward = blocks * p.rewardPerBlock;
-        p.accRewardPerShare += (reward * 1e12) / p.totalStaked;
-        p.lastRewardTime = block.number;
+        uint256 duration = block.timestamp - p.lastRewardTime;
+        uint256 reward = duration * p.rewardPerSec;
+        p.accRewardPerShare += (reward * MULTIPLIER) / p.totalStaked;
+        p.lastRewardTime = block.timestamp;
     }
 
     // ---------------- VIEWS ----------------
@@ -217,10 +219,10 @@ contract MultiPoolStakingUpgradeable is
         uint256 accRewardPerShare = p.accRewardPerShare;
         if (block.number > p.lastRewardTime && p.totalStaked != 0) {
             uint256 blocks = block.number - p.lastRewardTime;
-            uint256 reward = blocks * p.rewardPerBlock;
-            accRewardPerShare += (reward * 1e12) / p.totalStaked;
+            uint256 reward = blocks * p.rewardPerSec;
+            accRewardPerShare += (reward * MULTIPLIER) / p.totalStaked;
         }
-        return (s.amount * accRewardPerShare) / 1e12 - s.rewardDebt;
+        return (s.amount * accRewardPerShare) / MULTIPLIER - s.rewardDebt;
     }
 
     function getTVL(uint256 poolId) external view returns (uint256) {
