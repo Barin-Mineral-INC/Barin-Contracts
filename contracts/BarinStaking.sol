@@ -23,6 +23,7 @@ contract MultiPoolStakingUpgradeable is
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
 
     uint256 public constant MULTIPLIER = 1e12;
+    uint256 public constant PERCENT_PRECESION = 10000;
 
     IERC20 public stakingToken;   // BARIN staking token
     IERC20 public rewardToken;    // BARIN reward token
@@ -162,7 +163,7 @@ contract MultiPoolStakingUpgradeable is
         uint256 penalty;
         if (block.timestamp < s.unlockTime) {
             // Early withdrawal -> apply penalty, forfeit rewards
-            penalty = (amount * p.penaltyBps) * (s.unlockTime - block.timestamp) / 10000;
+            penalty = (amount * p.penaltyBps) * (s.unlockTime - block.timestamp) / PERCENT_PRECESION;
             pending = 0; // all unclaimed rewards forfeited
         }
 
@@ -235,7 +236,7 @@ contract MultiPoolStakingUpgradeable is
 
     function previewPenalty(uint256 poolId, uint256 amount) external view returns (uint256) {
         Pool storage p = pools[poolId];
-        return (amount * p.penaltyBps) * (p.endTime - block.timestamp) / 10000;
+        return (amount * p.penaltyBps) * (p.endTime - block.timestamp) / PERCENT_PRECESION;
     }
 
     // ---------------- PAUSE CONTROL ----------------
