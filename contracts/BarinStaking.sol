@@ -7,6 +7,8 @@ import "@openzeppelin/contracts-upgradeable/utils/PausableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
 
+import "hardhat/console.sol";
+
 /**
  * @title BarinStaking
  * @notice Upgradable staking contract with multiple pools (flexible/locked),
@@ -155,7 +157,6 @@ contract BarinStaking is
         Stake storage s = stakes[msg.sender][poolId];
         Pool storage p = pools[poolId];
         require(s.amount >= amount, "Not enough staked");
-
         _updatePool(poolId);
 
         uint256 pending = (s.amount * p.accRewardPerShare) / MULTIPLIER - s.rewardDebt;
@@ -218,8 +219,8 @@ contract BarinStaking is
         Stake storage s = stakes[user][poolId];
 
         uint256 accRewardPerShare = p.accRewardPerShare;
-        if (block.number > p.lastRewardTime && p.totalStaked != 0) {
-            uint256 blocks = block.number - p.lastRewardTime;
+        if (block.timestamp > p.lastRewardTime && p.totalStaked != 0) {
+            uint256 blocks = block.timestamp - p.lastRewardTime;
             uint256 reward = blocks * p.rewardPerSec;
             accRewardPerShare += (reward * MULTIPLIER) / p.totalStaked;
         }
