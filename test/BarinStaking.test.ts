@@ -42,27 +42,27 @@ describe("BarinStaking", function () {
 
   describe("Admin functions", function () {
     it("allows admin to add a pool", async function () {
-      await staking.connect(admin).addPool(10, 100, 500, (await ethers.provider.getBlock("latest")).timestamp + 1000, 0);
+      await staking.connect(admin).addPool(10, 100, (await ethers.provider.getBlock("latest")).timestamp + 1000, 0);
       const pool = await staking.pools(0);
       expect(pool.rewardPerSec).to.equal(10);
     });
 
     it("updates pool params", async function () {
-      await staking.connect(admin).addPool(10, 100, 1, (await ethers.provider.getBlock("latest")).timestamp + 1000, 0);
-      await staking.connect(admin).updatePool(0, 20, 1, 600, (await ethers.provider.getBlock("latest")).timestamp + 2000);
+      await staking.connect(admin).addPool(10, 100, (await ethers.provider.getBlock("latest")).timestamp + 1000, 0);
+      await staking.connect(admin).updatePool(0, 20, 600, (await ethers.provider.getBlock("latest")).timestamp + 2000);
       const pool = await staking.pools(0);
       expect(pool.rewardPerSec).to.equal(20);
     });
 
     it("reverts if non-admin adds pool", async function () {
-      await expect(staking.connect(user1).addPool(10, 100, 1, 0, 0))
+      await expect(staking.connect(user1).addPool(10, 100, 0, 0))
         .to.reverted;
     });
   });
 
   describe("Staking flow", function () {
     beforeEach(async function () {
-      await staking.connect(admin).addPool(10, 100, 1, (await ethers.provider.getBlock("latest")).timestamp + 1000, 0);
+      await staking.connect(admin).addPool(10, 100, (await ethers.provider.getBlock("latest")).timestamp + 1000, 0);
       await stakingToken.connect(user1).approve(await staking.getAddress(), ethers.parseEther("1000"));
     });
 
@@ -101,7 +101,7 @@ describe("BarinStaking", function () {
 
   describe("Views & Helpers", function () {
     beforeEach(async function () {
-      await staking.connect(admin).addPool(10, 100, 1, (await ethers.provider.getBlock("latest")).timestamp + 1000, 0);
+      await staking.connect(admin).addPool(10, 100, (await ethers.provider.getBlock("latest")).timestamp + 1000, 0);
       await stakingToken.connect(user1).approve(await staking.getAddress(), ethers.parseEther("1000"));
       await staking.connect(user1).stake(0, 200);
     });
@@ -123,7 +123,7 @@ describe("BarinStaking", function () {
     });
 
     it("previews penalty", async function () {
-      const penalty = await staking.previewPenalty(0, 200);
+      const penalty = await staking.previewPenalty(0, 200000000000000);
       expect(penalty).to.be.gt(0);
     });
   });
@@ -137,11 +137,11 @@ describe("BarinStaking", function () {
   });
   describe("Additional Coverage", function () {
     beforeEach(async function () {
-      await staking.connect(admin).addPool(5, 50, 1, (await ethers.provider.getBlock("latest")).timestamp + 5000, 0);
+      await staking.connect(admin).addPool(5, 50, (await ethers.provider.getBlock("latest")).timestamp + 5000, 0);
     });
 
     it("reverts if updating non-existent pool", async function () {
-      await expect(staking.connect(admin).updatePool(99, 1, 1, 1, 1))
+      await expect(staking.connect(admin).updatePool(99, 1, 1, 1))
         .to.be.revertedWith("Pool not found");
     });
 
@@ -183,16 +183,16 @@ describe("BarinStaking", function () {
       await ethers.provider.send("evm_increaseTime", [100]);
       await ethers.provider.send("evm_mine");
 
-      await staking.connect(admin).updatePool(0, 50, 60, 300, (await ethers.provider.getBlock("latest")).timestamp + 10000);
+      await staking.connect(admin).updatePool(0, 50, 60, (await ethers.provider.getBlock("latest")).timestamp + 10000);
       const pool = await staking.pools(0);
       expect(pool.rewardPerSec).to.equal(50);
     });
 
     it("does nothing in _updatePool when no stakers", async function () {
-      await staking.connect(admin).addPool(1, 1, 1, (await ethers.provider.getBlock("latest")).timestamp + 1000, 0);
+      await staking.connect(admin).addPool(1, 1, (await ethers.provider.getBlock("latest")).timestamp + 1000, 0);
       await ethers.provider.send("evm_increaseTime", [100]);
       await ethers.provider.send("evm_mine");
-      await staking.connect(admin).updatePool(1, 1, 1, 1, (await ethers.provider.getBlock("latest")).timestamp + 2000)
+      await staking.connect(admin).updatePool(1, 1, 1, (await ethers.provider.getBlock("latest")).timestamp + 2000)
       // just exercising branch where totalStaked == 0
     });
 
@@ -244,7 +244,7 @@ describe("BarinStaking", function () {
       await stakingToken.connect(user1).approve(await staking.getAddress(), 100);
       await staking.connect(user1).stake(0, 100);
       const poolBefore = await staking.pools(0);
-      await staking.connect(admin).updatePool(0, 5, 50, 500, poolBefore.endTime);
+      await staking.connect(admin).updatePool(0, 5, 50, poolBefore.endTime);
       const poolAfter = await staking.pools(0);
       expect(poolAfter.reward).to.equal(poolBefore.reward);
     });

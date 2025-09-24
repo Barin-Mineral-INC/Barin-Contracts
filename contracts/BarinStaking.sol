@@ -26,6 +26,7 @@ contract BarinStaking is
 
     uint256 public constant MULTIPLIER = 1e12;
     uint256 public constant PERCENT_PRECESION = 10000;
+    uint256 public constant FULL_STAKING_PERIOD = 1 days * 365;
 
     IERC20 public stakingToken;   // BARIN staking token
     IERC20 public rewardToken;    // BARIN reward token
@@ -33,7 +34,6 @@ contract BarinStaking is
     struct Pool {
         uint256 rewardPerSec;
         uint256 minStake;      
-        uint256 penaltyBps;     
         uint256 endTime;     
         uint256 totalStaked;     
         uint256 accRewardPerShare;
@@ -87,14 +87,12 @@ contract BarinStaking is
     function addPool(
         uint256 rewardPerSec,
         uint256 minStake,
-        uint256 penaltyBps,
         uint256 endTime,
         uint256 accRewardPerShare
     ) external onlyRole(ADMIN_ROLE) {
         pools[poolCount] = Pool({
             rewardPerSec: rewardPerSec,
             minStake: minStake,
-            penaltyBps: penaltyBps,
             endTime: endTime,
             totalStaked: 0,
             accRewardPerShare: accRewardPerShare,
@@ -110,7 +108,6 @@ contract BarinStaking is
         uint256 poolId,
         uint256 rewardPerSec,
         uint256 minStake,
-        uint256 penaltyBps,
         uint256 endTime
     ) external onlyRole(ADMIN_ROLE) {
         require(pools[poolId].exists, "Pool not found");
@@ -119,7 +116,6 @@ contract BarinStaking is
         Pool storage p = pools[poolId];
         p.rewardPerSec = rewardPerSec;
         p.minStake = minStake;
-        p.penaltyBps = penaltyBps;
         p.endTime = endTime;
         emit PoolUpdated(poolId, rewardPerSec);
     }
@@ -164,7 +160,7 @@ contract BarinStaking is
         uint256 penalty;
         if (block.timestamp < s.unlockTime) {
             // Early withdrawal -> apply penalty, forfeit rewards
-            penalty = (amount * p.penaltyBps) * (s.unlockTime - block.timestamp) / PERCENT_PRECESION;
+            penalty = amount * (s.unlockTime - block.timestamp) / FULL_STAKING_PERIOD;
             pending = 0; // all unclaimed rewards forfeited
         }
 
@@ -237,7 +233,7 @@ contract BarinStaking is
 
     function previewPenalty(uint256 poolId, uint256 amount) external view returns (uint256) {
         Pool storage p = pools[poolId];
-        return (amount * p.penaltyBps) * (p.endTime - block.timestamp) / PERCENT_PRECESION;
+        return amount * (p.endTime - block.timestamp) / FULL_STAKING_PERIOD;
     }
 
     // ---------------- PAUSE CONTROL ----------------

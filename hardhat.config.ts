@@ -56,7 +56,7 @@ const hhConfig: HardhatUserConfig = {
         network: "testnet_amoy",
         chainId: 80002,
         urls: {
-          apiURL: "https://api.etherscan.io/v2/api",
+          apiURL: "https://api.etherscan.io/v2/api?chainid=80002",
           browserURL: "https://polygonscan.com/"
         }
       },

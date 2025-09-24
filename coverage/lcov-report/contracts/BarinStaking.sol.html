@@ -20,14 +20,14 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">98.39% </span>
+        <span class="strong">96.77% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>61/62</span>
+        <span class='fraction'>60/62</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">81.25% </span>
+        <span class="strong">79.17% </span>
         <span class="quiet">Branches</span>
-        <span class='fraction'>39/48</span>
+        <span class='fraction'>38/48</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">92.86% </span>
@@ -35,9 +35,9 @@
         <span class='fraction'>13/14</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">100% </span>
+        <span class="strong">98.82% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>86/86</span>
+        <span class='fraction'>84/85</span>
       </div>
     </div>
   </div>
@@ -290,11 +290,7 @@
 245
 246
 247
-248
-249
-250
-251
-252</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+248</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -374,7 +370,6 @@
 <span class="cline-any cline-yes">31×</span>
 <span class="cline-any cline-yes">31×</span>
 <span class="cline-any cline-yes">31×</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -397,10 +392,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">29×</span>
 <span class="cline-any cline-yes">29×</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -412,7 +405,6 @@
 <span class="cline-any cline-yes">5×</span>
 <span class="cline-any cline-yes">4×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4×</span>
 <span class="cline-any cline-yes">4×</span>
 <span class="cline-any cline-yes">4×</span>
 <span class="cline-any cline-yes">4×</span>
@@ -470,7 +462,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4×</span>
 <span class="cline-any cline-yes">4×</span>
-<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4×</span>
@@ -573,6 +565,7 @@ contract BarinStaking is
 &nbsp;
     uint256 public constant MULTIPLIER = 1e12;
     uint256 public constant PERCENT_PRECESION = 10000;
+    uint256 public constant FULL_STAKING_PERIOD = 1 days * 365;
 &nbsp;
     IERC20 public stakingToken;   // BARIN staking token
     IERC20 public rewardToken;    // BARIN reward token
@@ -580,7 +573,6 @@ contract BarinStaking is
     struct Pool {
         uint256 rewardPerSec;
         uint256 minStake;      
-        uint256 penaltyBps;     
         uint256 endTime;     
         uint256 totalStaked;     
         uint256 accRewardPerShare;
@@ -634,14 +626,12 @@ contract BarinStaking is
     function addPool(
         uint256 rewardPerSec,
         uint256 minStake,
-        uint256 penaltyBps,
         uint256 endTime,
         uint256 accRewardPerShare
     ) external onlyRole(ADMIN_ROLE) {
         pools[poolCount] = Pool({
             rewardPerSec: rewardPerSec,
             minStake: minStake,
-            penaltyBps: penaltyBps,
             endTime: endTime,
             totalStaked: 0,
             accRewardPerShare: accRewardPerShare,
@@ -657,7 +647,6 @@ contract BarinStaking is
         uint256 poolId,
         uint256 rewardPerSec,
         uint256 minStake,
-        uint256 penaltyBps,
         uint256 endTime
     ) external <span class="missing-if-branch" title="else path not taken" >E</span>onlyRole(ADMIN_ROLE) {
         require(pools[poolId].exists, "Pool not found");
@@ -666,7 +655,6 @@ contract BarinStaking is
         Pool storage p = pools[poolId];
         p.rewardPerSec = rewardPerSec;
         p.minStake = minStake;
-        p.penaltyBps = penaltyBps;
         p.endTime = endTime;
         emit PoolUpdated(poolId, rewardPerSec);
     }
@@ -711,7 +699,7 @@ contract BarinStaking is
         uint256 penalty;
         if (block.timestamp &lt; s.unlockTime) {
             // Early withdrawal -&gt; apply penalty, forfeit rewards
-            penalty = (amount * p.penaltyBps) * (s.unlockTime - block.timestamp) / PERCENT_PRECESION;
+            penalty = amount * (s.unlockTime - block.timestamp) / FULL_STAKING_PERIOD;
             pending = 0; // all unclaimed rewards forfeited
         }
 &nbsp;
@@ -720,8 +708,8 @@ contract BarinStaking is
         p.totalStaked -= amount;
 &nbsp;
         stakingToken.transfer(msg.sender, amount - penalty);
-        if (penalty &gt; 0) {
-            stakingToken.transfer(treasury, penalty); // treasury
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (penalty &gt; 0) {
+<span class="cstat-no" title="statement not covered" >            stakingToken.transfer(treasury, penalty)</span>; // treasury
         }
 &nbsp;
         if (pending &gt; 0) {
@@ -784,7 +772,7 @@ contract BarinStaking is
 &nbsp;
     function previewPenalty(uint256 poolId, uint256 amount) external view returns (uint256) {
         Pool storage p = pools[poolId];
-        return (amount * p.penaltyBps) * (p.endTime - block.timestamp) / PERCENT_PRECESION;
+        return amount * (p.endTime - block.timestamp) / FULL_STAKING_PERIOD;
     }
 &nbsp;
     // ---------------- PAUSE CONTROL ----------------
@@ -802,7 +790,7 @@ contract BarinStaking is
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Sep 17 2025 18:08:56 GMT-0400 (Eastern Daylight Time)
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Sep 24 2025 08:45:55 GMT-0400 (Eastern Daylight Time)
 </div>
 </div>
 <script src="../prettify.js"></script>
